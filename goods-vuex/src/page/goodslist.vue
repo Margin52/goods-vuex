@@ -9,15 +9,15 @@
       <p class="li-hea-p">您尚未添加收货地址</p>
     </div>
     <div class="li-conf">
-      <div class="li-conf-box">
+      <div class="li-conf-box" v-for="datadel in data" :key="datadel.index">
         <div class="li-conf-box-top">
           <div class="li-conf-box-top-le">
-            <p class="li-conf-box-top-le_pone"><span>齐德龙</span><span>15202926079</span></p>
-            <p class="li-conf-box-top-le_ptwo">北京西城区华远北街通港大厦7层703室</p>
+            <p class="li-conf-box-top-le_pone"><span>{{datadel.recName}}</span>&nbsp;&nbsp;<span>{{datadel.recPhoneNo}}</span></p>
+            <p class="li-conf-box-top-le_ptwo">{{datadel.address}}</p>
           </div>
-          <div class="li-conf-box-top-ri">
+          <router-link tag="div" class="li-conf-box-top-ri" to="goodsdec">
             <img class="li-conf-box-top-ri-img" src="../../static/images/li-conf-one.png" alt="">
-          </div>
+          </router-link>
         </div>
         <div class="li-conf-box-bot">
           <img class="li-conf-box-bot-one" src="../../static/images/li-conf-two.png" alt="">
@@ -30,23 +30,45 @@
     <div class="li-foo">
       <div class="li-foo-box">
         <img class="li-foo-one" src="../../static/images/li-foo-one.png" alt="">
-        <p class="li-foo-p"> 新增收货地址</p>
+        <router-link to="/goodsins">
+          <p class="li-foo-p">新增收货地址</p>
+        </router-link>
       </div>
     </div>
   </div>
 </template>
 
-<script type='text/ecmascript-6'>
+<script>
+import { createNamespacedHelpers } from 'vuex'
+const { mapState, mapActions } = createNamespacedHelpers('goodsone')
   export default {
     data () {
       return {
-        isShow:false
+        isShow:false,
       }
+    },
+    /**
+     * ...mapState({
+        data: state => state.goodsone.data
+      })
+     */
+    computed: {
+      ...mapState(['data'])
+    },
+    methods:{
+      ...mapActions(['getdata']),
+      ongetdata:function(){
+        this.getdata()
+        // this.$store.dispatch('goodsone/getdata')
+      }
+    },
+    created(){
+      this.ongetdata()
     }
   }
 </script>
 
-<style lang='scss' scoped='' type='text/css'>
+<style lang='scss' scoped>
 .goodslist{
   background:#f6f6f6;
   .li-hea{
@@ -88,6 +110,7 @@
     background:#f6f6f6;
     width:100%;
     height:9.3rem;
+    overflow-y:scroll;
     .li-conf-box{
       width:100%;
       background:#fff;

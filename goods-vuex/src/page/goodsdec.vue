@@ -1,7 +1,9 @@
 <template>
   <div class="goodsdec">
     <div class="in-hea">
-      <img class="in-hea-one" src="../../static/images/li-hea-one.png" alt="">
+      <router-link to="/">
+        <img class="in-hea-one" src="../../static/images/li-hea-one.png" alt="">
+      </router-link>
       <p class="in-hea-p">修改地址</p>
     </div>
     <div class="in-con">
