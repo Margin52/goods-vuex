@@ -1,29 +1,31 @@
-<template>
+<template class="wrapper">
   <div class="goodslist">
     <div class="li-hea">
       <img class="li-hea-one" src="../../static/images/li-hea-one.png" alt="">
       <p class="li-hea-p">收货地址管理</p>
     </div>
-    <div class="li-con" v-if="isShow">
+    <div class="li-con" v-if="isBlock">
       <img class="li-con-one" src="../../static/images/li-con-one.png" alt="">
       <p class="li-hea-p">您尚未添加收货地址</p>
     </div>
     <div class="li-conf">
-      <div class="li-conf-box" v-for="datadel in data" :key="datadel.index">
+      <div class="li-conf-box" v-for="(datadel, $ind) in data" :key="$ind">
         <div class="li-conf-box-top">
           <div class="li-conf-box-top-le">
             <p class="li-conf-box-top-le_pone"><span>{{datadel.recName}}</span>&nbsp;&nbsp;<span>{{datadel.recPhoneNo}}</span></p>
             <p class="li-conf-box-top-le_ptwo">{{datadel.address}}</p>
           </div>
-          <router-link tag="div" class="li-conf-box-top-ri" to="goodsdec">
-            <img class="li-conf-box-top-ri-img" src="../../static/images/li-conf-one.png" alt="">
+          <router-link tag="div" class="li-conf-box-top-ri" to="/goodsdec">
+            <img @click="modifi" :dataid="$ind" class="li-conf-box-top-ri-img" src="../../static/images/li-conf-one.png" alt="">
           </router-link>
         </div>
         <div class="li-conf-box-bot">
-          <img class="li-conf-box-bot-one" src="../../static/images/li-conf-two.png" alt="">
-          <span class="li-conf-box-bot-two">设为默认地址</span>
+          <img v-if="datadel.checkIsUsed === '1'"   class="li-conf-box-bot-one" src="../../static/images/li-conf-two.png" alt="">
+          <img v-if="datadel.checkIsUsed === '0'" class="li-conf-box-bot-one" src="../../static/images/li-conf-four.png" alt="">
+          <span v-if="datadel.checkIsUsed === '0'" class="li-conf-box-bot-two">设为默认地址</span>
+          <span v-if="datadel.checkIsUsed === '1'" class="li-conf-box-bot-twof">设为默认地址</span>
           <img class="li-conf-box-bot-three" src="../../static/images/li-conf-three.png" alt="">
-          <span class="li-conf-box-bot-four">删除</span>
+          <span @click="removeTo" :dataid="datadel.recAddrId" class="li-conf-box-bot-four">删除</span>
         </div>
       </div>
     </div>
@@ -40,11 +42,17 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
+// import BScroll from 'better-scroll'
+// let scroll = new BScroll('.goodslist',{
+//     scrollY: true,
+//     click: true
+// })
 const { mapState, mapActions } = createNamespacedHelpers('goodsone')
   export default {
     data () {
       return {
-        isShow:false,
+        isBlock:false,
+        isShow:false
       }
     },
     /**
@@ -53,17 +61,56 @@ const { mapState, mapActions } = createNamespacedHelpers('goodsone')
       })
      */
     computed: {
+      /**
+       * 利用mapState拿到store中的数据
+       */
       ...mapState(['data'])
     },
     methods:{
+      /**
+       * 获取store里边的函数
+       */
       ...mapActions(['getdata']),
       ongetdata:function(){
         this.getdata()
         // this.$store.dispatch('goodsone/getdata')
+      },
+      /**
+       * 删除收货人信息
+       */
+      removeTo:function(e){
+        let id = e.target.getAttribute('dataid')
+        // console.log(this.data)
+        for(var item=0; item<this.data.length;item++){
+          if(this.data[item].recAddrId === id){
+            this.data.splice(item,1)
+          }
+        }
+      },
+      /**
+       * 修改收货人信息
+       */
+      modifi:function(e){
+        let id = e.target.getAttribute('dataid')
+        this.$router.push({
+          name:'goodsdec',
+          params:{
+            getId:id
+          }
+        })
+        // this.$router.push({
+        //   path:'/goodsdec',
+        //   query: {
+        //      getId: 'id'
+        //   }
+        // })
       }
     },
     created(){
       this.ongetdata()
+    },
+    mounted(){
+
     }
   }
 </script>
@@ -155,7 +202,6 @@ const { mapState, mapActions } = createNamespacedHelpers('goodsone')
             height:0.32rem;
           }
         }
-
       }
       .li-conf-box-bot{
         width:100%;
@@ -169,7 +215,13 @@ const { mapState, mapActions } = createNamespacedHelpers('goodsone')
         }
         .li-conf-box-bot-two{
           font-size:0.24rem;
-          color:#03a3ff;
+          color:#999999;
+          margin-left:0.11rem;
+          margin-right:3rem;
+        }
+        .li-conf-box-bot-twof{
+          font-size:0.24rem;
+          color:#00a3ff;
           margin-left:0.11rem;
           margin-right:3rem;
         }
