@@ -4,8 +4,13 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store/modules/index'
+import BScroll from 'better-scroll'
 
 Vue.config.productionTip = false
+// new BScroll('#app',{
+//   scrollY: true,
+//   click: true
+// })
 
 /* eslint-disable no-new */
 new Vue({
